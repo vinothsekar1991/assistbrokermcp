@@ -1,0 +1,226 @@
+{
+  "description": "E*TRADE API Order Request Body Examples",
+  "last_updated": "2025-01-28",
+  "notes": [
+    "All string values should be strings (e.g., '1' not 1)",
+    "previewId in PreviewIds array should be integer",
+    "Market was closed warning is normal for after-hours orders"
+  ],
+  "preview_order": {
+    "description": "Preview Order Request - Used to preview an order before placing it",
+    "endpoint": "POST /v1/accounts/{accountIdKey}/orders/preview",
+    "example": {
+      "PreviewOrderRequest": {
+        "orderType": "EQ",
+        "clientOrderId": "unique_client_order_id",
+        "Order": [
+          {
+            "allOrNone": "false",
+            "priceType": "LIMIT",
+            "orderTerm": "GOOD_FOR_DAY",
+            "marketSession": "REGULAR",
+            "stopPrice": "",
+            "limitPrice": "169",
+            "Instrument": [
+              {
+                "Product": {
+                  "securityType": "EQ",
+                  "symbol": "FB"
+                },
+                "orderAction": "BUY",
+                "quantityType": "QUANTITY",
+                "quantity": "1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "market_order_example": {
+      "PreviewOrderRequest": {
+        "orderType": "EQ",
+        "clientOrderId": "AAPL_BUY_1_MARKET",
+        "Order": [
+          {
+            "allOrNone": "false",
+            "priceType": "MARKET",
+            "orderTerm": "GOOD_FOR_DAY",
+            "marketSession": "REGULAR",
+            "Instrument": [
+              {
+                "Product": {
+                  "securityType": "EQ",
+                  "symbol": "AAPL"
+                },
+                "orderAction": "BUY",
+                "quantityType": "QUANTITY",
+                "quantity": "1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "limit_order_example": {
+      "PreviewOrderRequest": {
+        "orderType": "EQ",
+        "clientOrderId": "AAPL_BUY_1_LIMIT_275",
+        "Order": [
+          {
+            "allOrNone": "false",
+            "priceType": "LIMIT",
+            "orderTerm": "GOOD_FOR_DAY",
+            "marketSession": "REGULAR",
+            "limitPrice": "275",
+            "Instrument": [
+              {
+                "Product": {
+                  "securityType": "EQ",
+                  "symbol": "AAPL"
+                },
+                "orderAction": "BUY",
+                "quantityType": "QUANTITY",
+                "quantity": "1"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "place_order": {
+    "description": "Place Order Request - Used to place an order after preview. Must include previewId from preview response",
+    "endpoint": "POST /v1/accounts/{accountIdKey}/orders/place",
+    "example": {
+      "PlaceOrderRequest": {
+        "orderType": "EQ",
+        "clientOrderId": "unique_client_order_id",
+        "PreviewIds": [
+          {
+            "previewId": 3429395279
+          }
+        ],
+        "Order": [
+          {
+            "allOrNone": "false",
+            "priceType": "LIMIT",
+            "orderTerm": "GOOD_FOR_DAY",
+            "marketSession": "REGULAR",
+            "stopPrice": "",
+            "limitPrice": "169",
+            "Instrument": [
+              {
+                "Product": {
+                  "securityType": "EQ",
+                  "symbol": "FB"
+                },
+                "orderAction": "BUY",
+                "quantityType": "QUANTITY",
+                "quantity": "1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "market_order_example": {
+      "PlaceOrderRequest": {
+        "orderType": "EQ",
+        "clientOrderId": "AAPL_BUY_1_MARKET",
+        "PreviewIds": [
+          {
+            "previewId": 35425910200
+          }
+        ],
+        "Order": [
+          {
+            "allOrNone": "false",
+            "priceType": "MARKET",
+            "orderTerm": "GOOD_FOR_DAY",
+            "marketSession": "REGULAR",
+            "Instrument": [
+              {
+                "Product": {
+                  "securityType": "EQ",
+                  "symbol": "AAPL"
+                },
+                "orderAction": "BUY",
+                "quantityType": "QUANTITY",
+                "quantity": "1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "limit_order_example": {
+      "PlaceOrderRequest": {
+        "orderType": "EQ",
+        "clientOrderId": "AAPL_BUY_1_LIMIT_275",
+        "PreviewIds": [
+          {
+            "previewId": 35425910200
+          }
+        ],
+        "Order": [
+          {
+            "allOrNone": "false",
+            "priceType": "LIMIT",
+            "orderTerm": "GOOD_FOR_DAY",
+            "marketSession": "REGULAR",
+            "limitPrice": "275",
+            "Instrument": [
+              {
+                "Product": {
+                  "securityType": "EQ",
+                  "symbol": "AAPL"
+                },
+                "orderAction": "BUY",
+                "quantityType": "QUANTITY",
+                "quantity": "1"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "cancel_order": {
+    "description": "Cancel Order Request",
+    "endpoint": "PUT /v1/accounts/{accountIdKey}/orders/cancel",
+    "example": {
+      "CancelOrderRequest": {
+        "orderId": 594
+      }
+    }
+  },
+  "field_descriptions": {
+    "orderType": "Type of order: EQ (equity), OPTN (options), MF (mutual fund), BOND, PREFS",
+    "clientOrderId": "Unique identifier for the order (string)",
+    "previewId": "Preview ID from preview response (integer)",
+    "priceType": "MARKET, LIMIT, STOP, STOP_LIMIT, TRAILING_STOP_CNST",
+    "orderTerm": "GOOD_FOR_DAY, GOOD_UNTIL_CANCEL, IMMEDIATE_OR_CANCEL, FILL_OR_KILL",
+    "marketSession": "REGULAR, EXTENDED",
+    "allOrNone": "false or true (string)",
+    "limitPrice": "Limit price for LIMIT orders (string)",
+    "stopPrice": "Stop price for STOP orders (string, can be empty)",
+    "securityType": "EQ (equity), OPTN (options), MF (mutual fund)",
+    "symbol": "Stock symbol (string)",
+    "orderAction": "BUY, SELL, BUY_TO_COVER, SELL_SHORT",
+    "quantityType": "QUANTITY or DOLLAR",
+    "quantity": "Number of shares or dollar amount (string)"
+  },
+  "order_workflow": {
+    "step1": "Preview the order using PreviewOrderRequest",
+    "step2": "Extract previewId from PreviewOrderResponse.PreviewIds[0].previewId",
+    "step3": "Place the order using PlaceOrderRequest with previewId in PreviewIds array",
+    "step4": "Extract orderId from PlaceOrderResponse.OrderIds[0].orderId"
+  },
+  "common_errors": {
+    "1021": "Insufficient funds in account",
+    "3010": "Insufficient funds in account (alternative code)",
+    "1027": "Market was closed when order received - order will be reviewed at market open",
+    "9999": "Validation error - check request format"
+  }
+}
+

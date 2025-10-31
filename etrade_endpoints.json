@@ -1,0 +1,917 @@
+        {
+  "version": "1.0",
+  "last_updated": "2024",
+  "base_urls": {
+    "sandbox": "https://apisb.etrade.com",
+    "production": "https://api.etrade.com"
+  },
+  "categories": {
+    "authorization": {
+      "description": "OAuth 1.0a authentication endpoints",
+      "endpoints": [
+        {
+          "name": "Get Request Token",
+          "description": "Initiates the OAuth process by returning a temporary request token. The request token expires after five minutes.",
+          "method": "POST",
+          "endpoint": "/oauth/request_token",
+          "sandbox_url": "https://apisb.etrade.com/oauth/request_token",
+          "production_url": "https://api.etrade.com/oauth/request_token",
+          "requires_auth": false,
+          "parameters": {
+            "headers": {
+              "oauth_callback": {
+                "required": true,
+                "description": "Must always be set to 'oob'",
+                "example": "oob"
+              }
+            }
+          },
+          "response": {
+            "oauth_token": "string",
+            "oauth_token_secret": "string",
+            "oauth_callback_confirmed": "string"
+          }
+        },
+        {
+          "name": "Authorize Application",
+          "description": "Redirects user to E*TRADE authorization page to grant access",
+          "method": "GET",
+          "endpoint": "/e/t/etws/authorize",
+          "sandbox_url": "https://us.etrade.com/e/t/etws/authorize",
+          "production_url": "https://us.etrade.com/e/t/etws/authorize",
+          "requires_auth": false,
+          "parameters": {
+            "query": {
+              "key": {
+                "required": true,
+                "description": "Consumer key",
+                "type": "string"
+              },
+              "token": {
+                "required": true,
+                "description": "Request token from Get Request Token",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Access Token",
+          "description": "Exchanges the request token for an access token after user authorization",
+          "method": "POST",
+          "endpoint": "/oauth/access_token",
+          "sandbox_url": "https://apisb.etrade.com/oauth/access_token",
+          "production_url": "https://api.etrade.com/oauth/access_token",
+          "requires_auth": false,
+          "parameters": {
+            "headers": {
+              "oauth_verifier": {
+                "required": true,
+                "description": "Verification code from authorization page",
+                "type": "string"
+              }
+            }
+          },
+          "response": {
+            "oauth_token": "string",
+            "oauth_token_secret": "string"
+          }
+        },
+        {
+          "name": "Renew Access Token",
+          "description": "Reactivates an access token that has been inactive for two hours or more",
+          "method": "GET",
+          "endpoint": "/oauth/renew_access_token",
+          "sandbox_url": "https://apisb.etrade.com/oauth/renew_access_token",
+          "production_url": "https://api.etrade.com/oauth/renew_access_token",
+          "requires_auth": true
+        },
+        {
+          "name": "Revoke Access Token",
+          "description": "Revokes an access token, terminating its ability to access E*TRADE data",
+          "method": "GET",
+          "endpoint": "/oauth/revoke_access_token",
+          "sandbox_url": "https://apisb.etrade.com/oauth/revoke_access_token",
+          "production_url": "https://api.etrade.com/oauth/revoke_access_token",
+          "requires_auth": true
+        }
+      ]
+    },
+    "accounts": {
+      "description": "Account information and management endpoints",
+      "endpoints": [
+        {
+          "name": "List Accounts",
+          "description": "Retrieves a list of E*TRADE accounts associated with the current user",
+          "method": "GET",
+          "endpoint": "/v1/accounts/list",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/list",
+          "production_url": "https://api.etrade.com/v1/accounts/list",
+          "requires_auth": true,
+          "parameters": {},
+          "example": {
+            "endpoint": "/v1/accounts/list"
+          }
+        },
+        {
+          "name": "Get Account Balances",
+          "description": "Fetches the current balance and related details for a specified account",
+          "method": "GET",
+          "endpoint": "/v1/accounts/{accountIdKey}/balance",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/{accountIdKey}/balance",
+          "production_url": "https://api.etrade.com/v1/accounts/{accountIdKey}/balance",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "accountIdKey": {
+                "required": true,
+                "description": "Account ID key from account list",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/accounts/YOUR_ACCOUNT_ID/balance"
+          }
+        },
+        {
+          "name": "View Portfolio",
+          "description": "Provides detailed portfolio information for a selected brokerage account",
+          "method": "GET",
+          "endpoint": "/v1/accounts/{accountIdKey}/portfolio",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/{accountIdKey}/portfolio",
+          "production_url": "https://api.etrade.com/v1/accounts/{accountIdKey}/portfolio",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "accountIdKey": {
+                "required": true,
+                "description": "Account ID key from account list",
+                "type": "string"
+              }
+            },
+            "query": {
+              "count": {
+                "required": false,
+                "description": "Number of positions to return",
+                "type": "integer"
+              },
+              "symbol": {
+                "required": false,
+                "description": "Filter by symbol",
+                "type": "string"
+              },
+              "view": {
+                "required": false,
+                "description": "Portfolio view type",
+                "type": "string",
+                "options": ["COMPLETE", "PERFORMANCE", "COMPLETE_FUNDAMENTAL"]
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/accounts/YOUR_ACCOUNT_ID/portfolio",
+            "params": {
+              "view": "COMPLETE"
+            }
+          }
+        },
+        {
+          "name": "List Transactions",
+          "description": "Retrieves a list of transactions for a specified account",
+          "method": "GET",
+          "endpoint": "/v1/accounts/{accountIdKey}/transactions",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/{accountIdKey}/transactions",
+          "production_url": "https://api.etrade.com/v1/accounts/{accountIdKey}/transactions",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "accountIdKey": {
+                "required": true,
+                "description": "Account ID key from account list",
+                "type": "string"
+              }
+            },
+            "query": {
+              "fromDate": {
+                "required": false,
+                "description": "Start date in MM/dd/yyyy format",
+                "type": "string"
+              },
+              "toDate": {
+                "required": false,
+                "description": "End date in MM/dd/yyyy format",
+                "type": "string"
+              },
+              "group": {
+                "required": false,
+                "description": "Transaction group",
+                "type": "string"
+              },
+              "count": {
+                "required": false,
+                "description": "Number of transactions to return",
+                "type": "integer"
+              },
+              "marker": {
+                "required": false,
+                "description": "Pagination marker",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/accounts/YOUR_ACCOUNT_ID/transactions",
+            "params": {
+              "fromDate": "01/01/2024",
+              "toDate": "12/31/2024"
+            }
+          }
+        },
+        {
+          "name": "List Transaction Details",
+          "description": "Fetches details for a specific transaction within an account",
+          "method": "GET",
+          "endpoint": "/v1/accounts/{accountIdKey}/transactions/{transactionId}",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/{accountIdKey}/transactions/{transactionId}",
+          "production_url": "https://api.etrade.com/v1/accounts/{accountIdKey}/transactions/{transactionId}",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "accountIdKey": {
+                "required": true,
+                "description": "Account ID key from account list",
+                "type": "string"
+              },
+              "transactionId": {
+                "required": true,
+                "description": "Transaction ID",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/accounts/YOUR_ACCOUNT_ID/transactions/TRANSACTION_ID"
+          }
+        }
+      ]
+    },
+    "market": {
+      "description": "Market data and quotes endpoints",
+      "endpoints": [
+        {
+          "name": "Get Quotes",
+          "description": "Retrieves real-time or delayed quotes for a specified list of symbols",
+          "method": "GET",
+          "endpoint": "/v1/market/quote/{symbol}",
+          "sandbox_url": "https://apisb.etrade.com/v1/market/quote/{symbol}",
+          "production_url": "https://api.etrade.com/v1/market/quote/{symbol}",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "symbol": {
+                "required": true,
+                "description": "Stock symbol(s). Can be single symbol or comma-separated list",
+                "type": "string"
+              }
+            },
+            "query": {
+              "detailFlag": {
+                "required": false,
+                "description": "Level of detail",
+                "type": "string",
+                "options": ["ALL", "FUNDAMENTAL", "INTRADAY", "OPTIONS", "WEEK_52", "MF_DETAIL"],
+                "default": "ALL"
+              },
+              "requireEarningsDate": {
+                "required": false,
+                "description": "Require earnings date",
+                "type": "boolean"
+              },
+              "skipMiniOptionsCheck": {
+                "required": false,
+                "description": "Skip mini options check",
+                "type": "boolean"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/market/quote/AAPL",
+            "params": {
+              "detailFlag": "ALL"
+            }
+          }
+        },
+        {
+          "name": "Look Up Product",
+          "description": "Searches for securities based on a full or partial match of the company name",
+          "method": "GET",
+          "endpoint": "/v1/market/productlookup",
+          "sandbox_url": "https://apisb.etrade.com/v1/market/productlookup",
+          "production_url": "https://api.etrade.com/v1/market/productlookup",
+          "requires_auth": true,
+          "parameters": {
+            "query": {
+              "company": {
+                "required": true,
+                "description": "Company name or partial name",
+                "type": "string"
+              },
+              "type": {
+                "required": false,
+                "description": "Product type",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/market/productlookup",
+            "params": {
+              "company": "Apple"
+            }
+          }
+        },
+        {
+          "name": "Get Option Chains",
+          "description": "Retrieves option chains for a specified symbol",
+          "method": "GET",
+          "endpoint": "/v1/market/optionchains",
+          "sandbox_url": "https://apisb.etrade.com/v1/market/optionchains",
+          "production_url": "https://api.etrade.com/v1/market/optionchains",
+          "requires_auth": true,
+          "parameters": {
+            "query": {
+              "symbol": {
+                "required": true,
+                "description": "Stock symbol",
+                "type": "string"
+              },
+              "expiryYear": {
+                "required": false,
+                "description": "Expiration year",
+                "type": "integer"
+              },
+              "expiryMonth": {
+                "required": false,
+                "description": "Expiration month",
+                "type": "integer"
+              },
+              "expiryDay": {
+                "required": false,
+                "description": "Expiration day",
+                "type": "integer"
+              },
+              "strikePriceNear": {
+                "required": false,
+                "description": "Strike price near",
+                "type": "number"
+              },
+              "noOfStrikes": {
+                "required": false,
+                "description": "Number of strikes",
+                "type": "integer"
+              },
+              "includeWeekly": {
+                "required": false,
+                "description": "Include weekly options",
+                "type": "boolean"
+              },
+              "skipAdjusted": {
+                "required": false,
+                "description": "Skip adjusted options",
+                "type": "boolean"
+              },
+              "optionCategory": {
+                "required": false,
+                "description": "Option category",
+                "type": "string"
+              },
+              "chainType": {
+                "required": false,
+                "description": "Chain type",
+                "type": "string",
+                "options": ["CALL", "PUT", "CALLPUT"]
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/market/optionchains",
+            "params": {
+              "symbol": "AAPL",
+              "expiryYear": 2024,
+              "expiryMonth": 12
+            }
+          }
+        },
+        {
+          "name": "Get Option Expire Dates",
+          "description": "Fetches expiration dates for options of a specified symbol",
+          "method": "GET",
+          "endpoint": "/v1/market/optionexpiredate",
+          "sandbox_url": "https://apisb.etrade.com/v1/market/optionexpiredate",
+          "production_url": "https://api.etrade.com/v1/market/optionexpiredate",
+          "requires_auth": true,
+          "parameters": {
+            "query": {
+              "symbol": {
+                "required": true,
+                "description": "Stock symbol",
+                "type": "string"
+              },
+              "expiryType": {
+                "required": false,
+                "description": "Expiration type",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/market/optionexpiredate",
+            "params": {
+              "symbol": "AAPL"
+            }
+          }
+        },
+        {
+          "name": "Market Movers",
+          "description": "Fetches top market movers for a specified market",
+          "method": "GET",
+          "endpoint": "/v1/market/movers/{market}",
+          "sandbox_url": "https://apisb.etrade.com/v1/market/movers/{market}",
+          "production_url": "https://api.etrade.com/v1/market/movers/{market}",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "market": {
+                "required": true,
+                "description": "Market identifier",
+                "type": "string",
+                "options": ["DOW", "NASDAQ", "S_AND_P"]
+              }
+            },
+            "query": {
+              "direction": {
+                "required": false,
+                "description": "Direction",
+                "type": "string",
+                "options": ["UP", "DOWN"]
+              },
+              "change": {
+                "required": false,
+                "description": "Change type",
+                "type": "string",
+                "options": ["PERCENT", "VALUE"]
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/market/movers/DOW",
+            "params": {
+              "direction": "UP",
+              "change": "PERCENT"
+            }
+          }
+        }
+      ]
+    },
+    "orders": {
+      "description": "Order placement and management endpoints",
+      "endpoints": [
+        {
+          "name": "List Orders",
+          "description": "Retrieves a list of orders for a specified account",
+          "method": "GET",
+          "endpoint": "/v1/accounts/{accountIdKey}/orders",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/{accountIdKey}/orders",
+          "production_url": "https://api.etrade.com/v1/accounts/{accountIdKey}/orders",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "accountIdKey": {
+                "required": true,
+                "description": "Account ID key from account list",
+                "type": "string"
+              }
+            },
+            "query": {
+              "fromDate": {
+                "required": false,
+                "description": "Start date in MM/dd/yyyy format",
+                "type": "string"
+              },
+              "toDate": {
+                "required": false,
+                "description": "End date in MM/dd/yyyy format",
+                "type": "string"
+              },
+              "status": {
+                "required": false,
+                "description": "Order status filter",
+                "type": "string",
+                "options": ["OPEN", "EXECUTED", "CANCELLED", "REJECTED", "EXPIRED"]
+              },
+              "marketSession": {
+                "required": false,
+                "description": "Market session",
+                "type": "string"
+              },
+              "count": {
+                "required": false,
+                "description": "Number of orders to return",
+                "type": "integer"
+              },
+              "marker": {
+                "required": false,
+                "description": "Pagination marker",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/accounts/YOUR_ACCOUNT_ID/orders",
+            "params": {
+              "status": "OPEN"
+            }
+          }
+        },
+        {
+          "name": "Preview Order",
+          "description": "Previews an order for a specified account before placing it",
+          "method": "POST",
+          "endpoint": "/v1/accounts/{accountIdKey}/orders/preview",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/{accountIdKey}/orders/preview",
+          "production_url": "https://api.etrade.com/v1/accounts/{accountIdKey}/orders/preview",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "accountIdKey": {
+                "required": true,
+                "description": "Account ID key from account list",
+                "type": "string"
+              }
+            },
+            "body": {
+              "orderType": {
+                "required": true,
+                "description": "Order type",
+                "type": "string",
+                "options": ["EQ", "OPTN", "MUTUAL_FUND", "BOND", "PREFS"]
+              },
+              "clientOrderId": {
+                "required": false,
+                "description": "Client order ID",
+                "type": "string"
+              },
+              "Order": {
+                "required": true,
+                "description": "Order details",
+                "type": "array",
+                "structure": {
+                  "priceType": "MARKET|LIMIT|STOP|STOP_LIMIT|TRAILING_STOP_CNST",
+                  "orderTerm": "GOOD_FOR_DAY|GOOD_UNTIL_CANCEL|IMMEDIATE_OR_CANCEL|FILL_OR_KILL",
+                  "marketSession": "REGULAR|EXTENDED",
+                  "stopPrice": "number (optional)",
+                  "limitPrice": "number (optional)",
+                  "Instrument": [
+                    {
+                      "Product": {
+                        "securityType": "string",
+                        "symbol": "string"
+                      },
+                      "orderAction": "BUY|SELL|BUY_TO_COVER|SELL_SHORT",
+                      "quantityType": "QUANTITY|DOLLAR",
+                      "quantity": "number"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/accounts/YOUR_ACCOUNT_ID/orders/preview",
+            "method": "POST",
+            "data": {
+              "orderType": "EQ",
+              "Order": [{
+                "priceType": "MARKET",
+                "orderTerm": "GOOD_FOR_DAY",
+                "marketSession": "REGULAR",
+                "Instrument": [{
+                  "Product": {
+                    "securityType": "EQ",
+                    "symbol": "AAPL"
+                  },
+                  "orderAction": "BUY",
+                  "quantityType": "QUANTITY",
+                  "quantity": 10
+                }]
+              }]
+            }
+          }
+        },
+        {
+          "name": "Place Order",
+          "description": "Places an order for a specified account",
+          "method": "POST",
+          "endpoint": "/v1/accounts/{accountIdKey}/orders/place",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/{accountIdKey}/orders/place",
+          "production_url": "https://api.etrade.com/v1/accounts/{accountIdKey}/orders/place",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "accountIdKey": {
+                "required": true,
+                "description": "Account ID key from account list",
+                "type": "string"
+              }
+            },
+            "body": {
+              "description": "Same structure as Preview Order. Must include previewId from preview response."
+            }
+          },
+          "example": {
+            "endpoint": "/v1/accounts/YOUR_ACCOUNT_ID/orders/place",
+            "method": "POST",
+            "data": {
+              "orderType": "EQ",
+              "previewId": "PREVIEW_ID_FROM_PREVIEW",
+              "Order": [{
+                "priceType": "MARKET",
+                "orderTerm": "GOOD_FOR_DAY",
+                "marketSession": "REGULAR",
+                "Instrument": [{
+                  "Product": {
+                    "securityType": "EQ",
+                    "symbol": "AAPL"
+                  },
+                  "orderAction": "BUY",
+                  "quantityType": "QUANTITY",
+                  "quantity": 10
+                }]
+              }]
+            }
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "description": "Cancels an existing order for a specified account",
+          "method": "PUT",
+          "endpoint": "/v1/accounts/{accountIdKey}/orders/cancel",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/{accountIdKey}/orders/cancel",
+          "production_url": "https://api.etrade.com/v1/accounts/{accountIdKey}/orders/cancel",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "accountIdKey": {
+                "required": true,
+                "description": "Account ID key from account list",
+                "type": "string"
+              }
+            },
+            "body": {
+              "orderId": {
+                "required": true,
+                "description": "Order ID to cancel",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/accounts/YOUR_ACCOUNT_ID/orders/cancel",
+            "method": "PUT",
+            "data": {
+              "orderId": "ORDER_ID_TO_CANCEL"
+            }
+          }
+        },
+        {
+          "name": "Change Previewed Order",
+          "description": "Previews changes to an existing order before submitting them",
+          "method": "POST",
+          "endpoint": "/v1/accounts/{accountIdKey}/orders/previewchange",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/{accountIdKey}/orders/previewchange",
+          "production_url": "https://api.etrade.com/v1/accounts/{accountIdKey}/orders/previewchange",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "accountIdKey": {
+                "required": true,
+                "description": "Account ID key from account list",
+                "type": "string"
+              }
+            },
+            "body": {
+              "description": "Order change details including orderId"
+            }
+          }
+        },
+        {
+          "name": "Place Changed Order",
+          "description": "Submits changes to an existing order",
+          "method": "POST",
+          "endpoint": "/v1/accounts/{accountIdKey}/orders/placechange",
+          "sandbox_url": "https://apisb.etrade.com/v1/accounts/{accountIdKey}/orders/placechange",
+          "production_url": "https://api.etrade.com/v1/accounts/{accountIdKey}/orders/placechange",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "accountIdKey": {
+                "required": true,
+                "description": "Account ID key from account list",
+                "type": "string"
+              }
+            },
+            "body": {
+              "description": "Changed order details including previewId from previewchange"
+            }
+          }
+        }
+      ]
+    },
+    "alerts": {
+      "description": "Alert management endpoints",
+      "endpoints": [
+        {
+          "name": "List Alerts",
+          "description": "Retrieves a list of alerts for the current user",
+          "method": "GET",
+          "endpoint": "/v1/user/alerts",
+          "sandbox_url": "https://apisb.etrade.com/v1/user/alerts",
+          "production_url": "https://api.etrade.com/v1/user/alerts",
+          "requires_auth": true,
+          "parameters": {
+            "query": {
+              "count": {
+                "required": false,
+                "description": "Number of alerts to return",
+                "type": "integer"
+              },
+              "category": {
+                "required": false,
+                "description": "Alert category",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/user/alerts"
+          }
+        },
+        {
+          "name": "List Alert Details",
+          "description": "Fetches details for a specific alert",
+          "method": "GET",
+          "endpoint": "/v1/user/alerts/{alertId}",
+          "sandbox_url": "https://apisb.etrade.com/v1/user/alerts/{alertId}",
+          "production_url": "https://api.etrade.com/v1/user/alerts/{alertId}",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "alertId": {
+                "required": true,
+                "description": "Alert ID",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/user/alerts/ALERT_ID"
+          }
+        },
+        {
+          "name": "Delete Alert",
+          "description": "Deletes a specific alert",
+          "method": "DELETE",
+          "endpoint": "/v1/user/alerts/{alertId}",
+          "sandbox_url": "https://apisb.etrade.com/v1/user/alerts/{alertId}",
+          "production_url": "https://api.etrade.com/v1/user/alerts/{alertId}",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "alertId": {
+                "required": true,
+                "description": "Alert ID",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/user/alerts/ALERT_ID",
+            "method": "DELETE"
+          }
+        }
+      ]
+    },
+    "user": {
+      "description": "User information endpoints",
+      "endpoints": [
+        {
+          "name": "User Profile",
+          "description": "Fetches the user's profile information",
+          "method": "GET",
+          "endpoint": "/v1/user/profile",
+          "sandbox_url": "https://apisb.etrade.com/v1/user/profile",
+          "production_url": "https://api.etrade.com/v1/user/profile",
+          "requires_auth": true,
+          "example": {
+            "endpoint": "/v1/user/profile"
+          }
+        },
+        {
+          "name": "List Watchlists",
+          "description": "Retrieves all watchlists for the user",
+          "method": "GET",
+          "endpoint": "/v1/user/watchlists",
+          "sandbox_url": "https://apisb.etrade.com/v1/user/watchlists",
+          "production_url": "https://api.etrade.com/v1/user/watchlists",
+          "requires_auth": true,
+          "example": {
+            "endpoint": "/v1/user/watchlists"
+          }
+        },
+        {
+          "name": "Get Watchlist",
+          "description": "Fetches details of a specific watchlist",
+          "method": "GET",
+          "endpoint": "/v1/user/watchlists/{watchlistId}",
+          "sandbox_url": "https://apisb.etrade.com/v1/user/watchlists/{watchlistId}",
+          "production_url": "https://api.etrade.com/v1/user/watchlists/{watchlistId}",
+          "requires_auth": true,
+          "parameters": {
+            "path": {
+              "watchlistId": {
+                "required": true,
+                "description": "Watchlist ID",
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "endpoint": "/v1/user/watchlists/WATCHLIST_ID"
+          }
+        }
+      ]
+    }
+  },
+  "usage_notes": {
+    "authentication": "All endpoints except authorization endpoints require OAuth 1.0a authentication. Use the authorization endpoints to obtain access tokens.",
+    "base_url": "Use 'sandbox_url' for testing and 'production_url' for live trading. The base URL is automatically selected based on ETRADE_SANDBOX environment variable.",
+    "path_parameters": "Replace path parameters like {accountIdKey} with actual values. Use values from List Accounts endpoint.",
+    "query_parameters": "Optional query parameters can be passed in the 'params' object when using etrade_get tool.",
+    "request_body": "For POST/PUT requests, include the request body in the 'data' object when using etrade_post tool.",
+    "error_handling": "All endpoints return standard HTTP status codes. 401/403 indicate authentication errors. 400 indicates invalid request parameters.",
+    "rate_limits": "E*TRADE API has rate limits. Be mindful of request frequency.",
+    "sandbox_vs_production": "Always test endpoints in sandbox environment before using production."
+  },
+  "common_patterns": {
+    "getting_account_id": {
+      "description": "First, get account list to find accountIdKey",
+      "endpoint": "/v1/accounts/list",
+      "method": "GET"
+    },
+    "placing_order_workflow": {
+      "steps": [
+        "1. Get account list: GET /v1/accounts/list",
+        "2. Preview order: POST /v1/accounts/{accountIdKey}/orders/preview",
+        "3. Place order: POST /v1/accounts/{accountIdKey}/orders/place (include previewId)"
+      ]
+    },
+    "getting_quote": {
+      "description": "Get quotes for one or more symbols",
+      "endpoint": "/v1/market/quote/{symbol}",
+      "method": "GET",
+      "note": "Symbol can be single (AAPL) or comma-separated (AAPL,MSFT,GOOGL)"
+    }
+  },
+  "order_types": {
+    "EQ": "Equity",
+    "OPTN": "Options",
+    "MUTUAL_FUND": "Mutual Fund",
+    "BOND": "Bond",
+    "PREFS": "Preferred Stock"
+  },
+  "order_actions": {
+    "BUY": "Buy",
+    "SELL": "Sell",
+    "BUY_TO_COVER": "Buy to Cover (short position)",
+    "SELL_SHORT": "Sell Short"
+  },
+  "price_types": {
+    "MARKET": "Market order",
+    "LIMIT": "Limit order",
+    "STOP": "Stop order",
+    "STOP_LIMIT": "Stop limit order",
+    "TRAILING_STOP_CNST": "Trailing stop order"
+  },
+  "order_terms": {
+    "GOOD_FOR_DAY": "Order valid for the trading day",
+    "GOOD_UNTIL_CANCEL": "Order valid until cancelled",
+    "IMMEDIATE_OR_CANCEL": "Fill immediately or cancel",
+    "FILL_OR_KILL": "Fill completely or cancel"
+  },
+  "market_sessions": {
+    "REGULAR": "Regular trading hours",
+    "EXTENDED": "Extended hours trading"
+  }
+}
+

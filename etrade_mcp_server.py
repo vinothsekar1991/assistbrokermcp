@@ -50,17 +50,17 @@ async def list_tools() -> List[Tool]:
     return [
         Tool(
             name="etrade_get",
-            description="Make a GET request to any E*TRADE API endpoint. Supports all GET endpoints like accounts, quotes, orders, positions, etc.",
+            description="Make a GET request to any E*TRADE API endpoint. Supports all GET endpoints like accounts, quotes, orders, positions, etc. Refer to etrade_endpoints.json for complete list of available endpoints, parameters, and examples.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "endpoint": {
                         "type": "string",
-                        "description": "API endpoint path (e.g., '/v1/accounts/list', '/v1/accounts/{accountId}/balance', '/v1/market/quote')"
+                        "description": "API endpoint path (e.g., '/v1/accounts/list', '/v1/accounts/{accountId}/balance', '/v1/market/quote'). See etrade_endpoints.json for all available endpoints."
                     },
                     "params": {
                         "type": "object",
-                        "description": "Query parameters as key-value pairs (e.g., {'symbol': 'AAPL', 'detailFlag': 'ALL'})",
+                        "description": "Query parameters as key-value pairs (e.g., {'symbol': 'AAPL', 'detailFlag': 'ALL'}). Refer to etrade_endpoints.json for endpoint-specific parameters.",
                         "additionalProperties": True
                     }
                 },
@@ -69,7 +69,7 @@ async def list_tools() -> List[Tool]:
         ),
         Tool(
             name="etrade_post",
-            description="Make a POST, PUT, or DELETE request to any E*TRADE API endpoint. Supports all POST/PUT/DELETE endpoints like placing orders, canceling orders, etc.",
+            description="Make a POST, PUT, or DELETE request to any E*TRADE API endpoint. Supports all POST/PUT/DELETE endpoints like placing orders, canceling orders, etc. Refer to etrade_endpoints.json for complete list of available endpoints, request body structures, and examples.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -81,16 +81,16 @@ async def list_tools() -> List[Tool]:
                     },
                     "endpoint": {
                         "type": "string",
-                        "description": "API endpoint path (e.g., '/v1/accounts/{accountId}/orders', '/v1/accounts/{accountId}/orders/cancel')"
+                        "description": "API endpoint path (e.g., '/v1/accounts/{accountId}/orders', '/v1/accounts/{accountId}/orders/cancel'). See etrade_endpoints.json for all available endpoints."
                     },
                     "data": {
                         "type": "object",
-                        "description": "Request body as JSON object (e.g., order data, cancel request, etc.)",
+                        "description": "Request body as JSON object (e.g., order data, cancel request, etc.). Refer to etrade_endpoints.json for endpoint-specific request body structures and examples.",
                         "additionalProperties": True
                     },
                     "params": {
                         "type": "object",
-                        "description": "Optional query parameters as key-value pairs",
+                        "description": "Optional query parameters as key-value pairs. Refer to etrade_endpoints.json for endpoint-specific parameters.",
                         "additionalProperties": True
                     }
                 },
