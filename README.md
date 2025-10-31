@@ -194,6 +194,17 @@ This MCP server provides generic functions (`etrade_get` and `etrade_post`) that
 - Alerts
 - And any other E*TRADE API endpoint
 
+### Endpoints Reference File
+
+A comprehensive reference file (`etrade_endpoints.json`) contains all supported E*TRADE API endpoints with:
+- Complete endpoint paths and HTTP methods
+- Required and optional parameters
+- Request/response structures
+- Usage examples
+- Order types, actions, and price types reference
+
+**Agents should refer to `etrade_endpoints.json` when making API requests** to ensure correct endpoint usage, parameters, and request formats. The JSON file can be read directly and contains all necessary information.
+
 Refer to the Example Workflow section for detailed examples of:
 - Order types (MARKET, LIMIT, STOP, STOP_LIMIT)
 - Order actions (BUY, SELL, BUY_TO_COVER, SELL_SHORT)
@@ -267,6 +278,14 @@ This section explains what each file in the project does:
   - Exposes tools for authentication and API access
   - Handles tool calls and converts them to E*TRADE API requests
   - Manages the E*TRADE client instance lifecycle
+  - References `etrade_endpoints.json` in tool descriptions for agent guidance
+
+- **`etrade_endpoints.json`** - Comprehensive E*TRADE API endpoints reference
+  - Contains all supported API endpoints organized by category
+  - Includes endpoint paths, HTTP methods, parameters, and examples
+  - Provides usage notes, common patterns, and order type references
+  - Used by agents to determine correct endpoint usage and parameters
+  - Can be read directly as JSON (no additional utilities required)
 
 ### Server Scripts
 
